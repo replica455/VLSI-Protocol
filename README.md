@@ -287,7 +287,7 @@ endmodule
   ```
 * The testbench is straight forward and if you understood the design code and the rough drawn waveform you can also understand the simulated waveform.
 
-### Refference 
+### SPI Protocol Refference 
 
 * https://www.circuitbasics.com/basics-of-the-spi-communication-protocol/
 
@@ -295,6 +295,9 @@ endmodule
 
 * https://hackaday.com/2016/07/01/what-could-go-wrong-spi/
 
+# UART Protocol
+
+‼️ Updating soon ‼️
 
 
 
