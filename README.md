@@ -215,6 +215,19 @@ always@(posedge clk)
 ```
 * As you can see the reset signal is active low means all the action will start when ```rst == 0``` else the machine will be in default ideal state i.e. no action will be performed.
 * noe to understand the above logic look at the waveform below ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/be415f74-9994-4a04-852a-758dd9c6af0d)
+* our target is to reduce 100MHz signal --------> 1 MHz signal i.e. 1MHz multiplied by 100 makes 100MHz.So 1 full cycle of 1 MHz signal is equivalent to 100 full cycle of 100MHz signal which has been clearly shown in the picture above. So logically speaking flo 50 clk cycle if sclk signal is at logic 0 then for next 50 clk cycle it should toggle to logic 1. again after that for 50 clk cycle it should again toggle to logic 0 and so on. So we can say to produce 1MHz signal from the 100MHz signal the sclk signal must toggle its state after every 50 cycle count of clk signal. With this consept we can write logic like
+```
+if(countc < 50 )
+          countc <= countc + 1;
+      else
+          begin
+          countc <= 0;
+          sclk <= ~sclk;
+          end
+```
+where countc is used as a counter which counts 50 state or 50 cycle of clk signal. whenever it exceeds count 50 state the else block will execute which will toggle the sclk state and reset the countc signal to 0 then again counting will start from 0 to 50 and so on.
+* now with thin understanding please read the always block as I have mentioned previously which is responsible for clock devider and generate the sclk signal which will trigger further state machine of transfering the data serially.
+* 
 
 
 ### Refference 
