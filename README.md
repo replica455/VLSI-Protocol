@@ -17,9 +17,9 @@ Bus Protocol Covered are
 * The bits of data can be transmitted either in parallel or serial form. In parallel communication, the bits of data are sent all at the same time, each through a separate wire.
 * In serial communication, the bits are sent one by one through a single wire.
 
-## SPT Protocol
+## SPI Protocol
 
-* Used for the communication mainly between the 1 master and multiple slaves where the master can be a microcontroller or an FPGA and slaved can be DAC or ADC.
+* Used for the communication mainly between the 1 master and multiple slaves where the master can be a microcontroller or an FPGA and slaves can be DAC or ADC.
 * The main operation is governed by 4 pins. So it is called 4 wire interface. This is illustrated in the diagram ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/98d2424a-47c0-474e-aac4-cbf911f9bf51)
 * The pin functionality are
 ```
