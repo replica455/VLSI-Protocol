@@ -186,6 +186,11 @@ endmodule
 ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/47093702-0f60-4eb7-a2e0-ed5184707c5e)
 
 
+*** THE CODES AND RESULT MIGHT BE OVERWHELMING TO UNDERSTAND SO PLEASE ALLOW ME TO BREAK THEM DOWN TO SIMPLIFIED DOCUMENTATION ***
+
+### Understanding The Design 
+:!    Updating soon           :!
+
 ### Refference 
 
 * https://www.circuitbasics.com/basics-of-the-spi-communication-protocol/
