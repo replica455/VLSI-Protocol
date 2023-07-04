@@ -30,7 +30,13 @@ CS   --> Chip select => In case of multiple slave the width of CS line will incr
 ```
 * Just to clarify the FPGA (master) board will run in "clk" clock freaquency which is usually high. The slaves like DAC and ADC Runs in low frequency clock signal. So we feed the Master with "clk" signal, then master device devides the clock using clock devider logic and produce a new clock signal called "sclk" or slave clock signal which will drive the slaves.
 * For simplicity we are using 1 slave so "CS". Infact the pins discussed above are all 1 bit.
-* 
+* The core idea of SPI is that each device has a shift-register that it can use to send or receive a byte of data. ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/fb6a31d7-0e2e-43f7-9bed-53319faa3db9) < Thanks to HACKDAY.COM for the documentation >
+*  These two shift registers are connected together in a ring, the output of one going to the input of the other and vice-versa. One device, the master, controls the common clock signal that makes sure that each register shifts one bit in just exactly as the other is shifting one bit out (and vice-versa).
+*  As you might expect, this means a master/slave pair must use the same clocking scheme to communicate.
+* The clock signal in SPI can be modified using the properties of clock polarity and clock phase. These two properties work together to define when the bits are output and when they are sampled.
+* Clock polarity (CPOL) can be set by the master to allow for bits to be output and sampled on either the rising or falling edge of the clock cycle.
+* Clock phase (CPHA) can be set for output and sampling to occur on either the first edge or second edge of the clock cycle, regardless of whether it is rising or falling.
+* Here are the snippet from the company ANALOG DEVICES which helps to understand the functionalities according to mode.
 
 
 
