@@ -189,7 +189,33 @@ endmodule
 ***THE CODES AND RESULT MIGHT BE OVERWHELMING TO UNDERSTAND SO PLEASE ALLOW ME TO BREAK THEM DOWN TO SIMPLIFIED DOCUMENTATION***
 
 ### Understanding The Design 
-‼️    Updating soon           ‼️
+
+* First let us understand the simplified block diagram ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/55c11e57-22c3-4a3a-a685-6ca6b69d8298)
+* Now previously we had discussed the major pin functions but other than those 4 pins some extra pins are require for the interface to work
+* clock "clk" is the signal which we are providing to the FPGA Board say it is 100 MHz. the SPI interface devides the clock to 1 MHz signal which then drives all the functions of the interface and sends/receive data to/from the slaves.
+* Please note dyou can make a clock devider logic for this purpose and the 100 MHz and 1 MHz are taken because for my example I am taking Digilent PMOD DAC which is known to work at maximum frequency of 1.8 MHz reliably.
+* If we look at the coded I've used an always block for the clock devider circuit logic
+```
+always@(posedge clk)
+  begin
+    if(rst == 1'b1) begin
+      countc <= 0;
+      sclk <= 1'b0;
+    end
+    else begin 
+      if(countc < 50 )
+          countc <= countc + 1;
+      else
+          begin
+          countc <= 0;
+          sclk <= ~sclk;
+          end
+    end
+  end
+```
+* As you can see the reset signal is active low means all the action will start when ```rst == 0``` else the machine will be in default ideal state i.e. no action will be performed.
+* noe to understand the above logic look at the waveform below ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/be415f74-9994-4a04-852a-758dd9c6af0d)
+
 
 ### Refference 
 
