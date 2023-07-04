@@ -1,4 +1,4 @@
-# VLSI-Protocol
+# VLSI-Protocol 
 ```
 communication Protocol covered are
 
@@ -13,7 +13,7 @@ Bus Protocol Covered are
 4. WISH BONE
 
 ```
-## INTRODUCTION ON COMMUNICATION PROTOCOL
+## INTRODUCTION ON COMMUNICATION PROTOCOL 📫 <=====📧===💌===📧=====> 📫
 * SPI, I2C, and UART are ideal for communication between microcontrollers and between microcontrollers and sensors where large amounts of high speed data don’t need to be transferred.
 * SPI, I2C, and UART are quite a bit slower than protocols like USB, ethernet, Bluetooth, and WiFi, but they’re a lot more simple and use less hardware and system resources
 * The bits of data can be transmitted either in parallel or serial form. In parallel communication, the bits of data are sent all at the same time, each through a separate wire.
@@ -186,7 +186,7 @@ endmodule
 ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/47093702-0f60-4eb7-a2e0-ed5184707c5e)
 
 
-*** THE CODES AND RESULT MIGHT BE OVERWHELMING TO UNDERSTAND SO PLEASE ALLOW ME TO BREAK THEM DOWN TO SIMPLIFIED DOCUMENTATION ***
+***THE CODES AND RESULT MIGHT BE OVERWHELMING TO UNDERSTAND SO PLEASE ALLOW ME TO BREAK THEM DOWN TO SIMPLIFIED DOCUMENTATION***
 
 ### Understanding The Design 
 ‼️    Updating soon           ‼️
