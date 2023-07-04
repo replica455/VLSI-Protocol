@@ -236,7 +236,7 @@ where countc is used as a counter which counts 50 state or 50 cycle of clk signa
 * The cs signal will remain low till for 12 cycle of sclk because out data has 12 bit.
 * after 12 bit has been transmitted the cs signal will be pulled high.
 * with this knowledge let us again visit the statemachine part of the design, for help i've added the comments.
-  ```
+```
 //state machine//
     reg [11:0] temp;
     
