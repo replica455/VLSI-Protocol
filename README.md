@@ -228,7 +228,13 @@ if(countc < 50 )
 where countc is used as a counter which counts 50 state or 50 cycle of clk signal. whenever it exceeds count 50 state the else block will execute which will toggle the sclk state and reset the countc signal to 0 then again counting will start from 0 to 50 and so on.
 * now with thin understanding please read the always block as I have mentioned previously which is responsible for clock devider and generate the sclk signal which will trigger further state machine of transfering the data serially.
 * Now follow this rough drawn waveform ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/f372ea89-e6cf-4725-ba86-8f5957564783)
-*
+* So as we have discussed all the operation occurs when the produced sclk triggers the  state machine. So in the waveform I've shown the the signal changes with respect to sclk only.
+* machine will start the operation when the reset signal rst is low
+* now din is a 12 bit pin where we put out data.
+* now newd is a signal which when get high logic the machine will read the din value. In the above waveform I made newd signal high and its corrosponding din value is 100101011100. when the newd signal is low whatever value or garbage value present in the din pin will not be read by machine. In a way you can say the newd signal indicates whether newdata is present or not.
+* Now when the din value is read, from the next clk cycle the chip select signal is triggered. as you can see from the waveform the chipselect is a active low signal. As soon as the cs signal is low it marks the start of transaction (SoT) and it will remain low till data transmition occur to slave. As soon as the cs will be high it marks end of transaction (EoT), i.e. transmission has ended.
+* The cs signal will remain low till for 12 cycle of sclk because out data has 12 bit.
+* after 12 bit has been transmitted the cs signal will be pulled high.
 
 
 ### Refference 
