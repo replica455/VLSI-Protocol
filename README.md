@@ -1,10 +1,12 @@
 # VLSI-Protocol
 ```
-communication Protocol covered are 
+communication Protocol covered are
+
 1. SPI
 2. UART
 3. I2C
 Bus Protocol Covered are
+
 1. APB
 2. AXI
 3. AHB 
@@ -61,8 +63,8 @@ CS   --> Chip select => In case of multiple slave the width of CS line will incr
 
 Now this conclude the theory of the SPI communication. Now let us proceed to implement the SPI Communication through Verilog.
 
-### SPI Protocol Verilog Implementation 
-
+## SPI Protocol Verilog Implementation 
+### Design Code
 ```
  module spi(
 input clk, newd,rst,
@@ -144,6 +146,45 @@ output reg sclk,cs,mosi
   
 endmodule
 ```
+
+### Testbench Code
+
+```
+`timescale 1ns / 1ps
+
+module test();
+
+reg clk, newd,rst;
+reg [11:0] din; 
+wire sclk,cs,mosi;
+
+spi DUT (.clk(clk),.newd(newd),.rst(rst),.din(din),.sclk(sclk),.cs(cs),.mosi(mosi));
+
+
+always #5 clk = ~clk;
+
+initial begin
+    clk = 0;
+    rst = 1;
+    newd = 0;
+    din = 12'b100101011100;
+    #1000;
+    rst = 0;
+    #1000;
+    newd = 1;   
+    #1000;
+    newd=0;
+    #1600;
+    $finish;
+end
+
+endmodule
+```
+
+### Simulated Waveform 
+
+![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/47093702-0f60-4eb7-a2e0-ed5184707c5e)
+
 
 ### Refference 
 
