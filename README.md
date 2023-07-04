@@ -227,7 +227,8 @@ if(countc < 50 )
 ```
 where countc is used as a counter which counts 50 state or 50 cycle of clk signal. whenever it exceeds count 50 state the else block will execute which will toggle the sclk state and reset the countc signal to 0 then again counting will start from 0 to 50 and so on.
 * now with thin understanding please read the always block as I have mentioned previously which is responsible for clock devider and generate the sclk signal which will trigger further state machine of transfering the data serially.
-* 
+* Now follow this rough drawn waveform ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/f372ea89-e6cf-4725-ba86-8f5957564783)
+*
 
 
 ### Refference 
