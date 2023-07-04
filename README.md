@@ -41,7 +41,40 @@ CS   --> Chip select => In case of multiple slave the width of CS line will incr
 * Clock polarity (CPOL) can be set by the master to allow for bits to be output and sampled on either the rising or falling edge of the clock cycle.
 * Clock phase (CPHA) can be set for output and sampling to occur on either the first edge or second edge of the clock cycle, regardless of whether it is rising or falling.
 * The below table summarises all the modes and their significance. Again all the credit goes to ANALOG DEVICES. ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/e491a900-6ba7-46f2-87f5-6e0fc33226e6)
-* 
+* The below figure will help to demonstrate different modes as mentioned. Note that in these examples, the data is shown on the MOSI and MISO line. The start and end of transmission is indicated by the dotted green line, the sampling edge is indicated in orange, and the shifting edge is indicated in blue. Please note these figures are for illustration purpose only.
+* SPI Mode 0, CPOL = 0, CPHA = 0: CLK idle state = low, data sampled on rising edge and shifted on falling edge. ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/416f7412-3dc6-45e3-a43f-4c303f3b997e)
+* SPI Mode 1, CPOL = 0, CPHA = 1: CLK idle state = low, data sampled on the falling edge and shifted on the rising edge. In this mode, clock polarity is 0, which indicates that the idle state of the clock signal is low. The clock phase in this mode is 1, which indicates that the data is sampled on the falling edge (shown by the orange dotted line) and the data is shifted on the rising edge (shown by the dotted blue line) of the clock signal. ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/0e829ff0-24c3-4f2d-bdfe-dc3291e4fdff)
+* SPI Mode 2, CPOL = 1, CPHA = 0: CLK idle state = high, data sampled on the rising edge and shifted on the falling edge. In this mode, the clock polarity is 1, which indicates that the idle state of the clock signal is high. The clock phase in this mode is 0, which indicates that the data is sampled on the rising edge (shown by the orange dotted line) and the data is shifted on the falling edge (shown by the dotted blue line) of the clock signal. ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/928b8494-9a42-445b-aabe-af1d31105c38)
+* SPI Mode 3, CPOL = 1, CPHA = 1: CLK idle state = high, data sampled on the falling edge and shifted on the rising edge. In this mode, the clock polarity is 1, which indicates that the idle state of the clock signal is high. The clock phase in this mode is 1, which indicates that the data is sampled on the falling edge (shown by the orange dotted line) and the data is shifted on the rising edge (shown by the dotted blue line) of the clock signal. ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/9b43cfe9-5fe1-4a69-a070-2c98b78aedfb)
+
+### Advantage of SPI Communication
+* No start and stop bits, so the data can be streamed continuously without interruption
+* No complicated slave addressing system like I2C
+* Higher data transfer rate than I2C (almost twice as fast)
+* Separate MISO and MOSI lines, so data can be sent and received at the same time
+
+### Disadvantage of SPI Communication 
+* Uses four wires (I2C and UARTs use two)
+* No acknowledgement that the data has been successfully received (I2C has this)
+* No form of error checking like the parity bit in UART
+* Only allows for a single master
+
+Now this conclude the theory of the SPI communication. Now let us proceed to implement the SPI Communication through Verilog.
+
+### SPI Protocol Verilog Implementation 
+
+### Refference 
+
+* https://www.circuitbasics.com/basics-of-the-spi-communication-protocol/
+
+* https://www.analog.com/en/analog-dialogue/articles/introduction-to-spi-interface.html
+
+* https://hackaday.com/2016/07/01/what-could-go-wrong-spi/
+
+
+
+
+
 
 
 
