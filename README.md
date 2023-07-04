@@ -235,7 +235,57 @@ where countc is used as a counter which counts 50 state or 50 cycle of clk signa
 * Now when the din value is read, from the next clk cycle the chip select signal is triggered. as you can see from the waveform the chipselect is a active low signal. As soon as the cs signal is low it marks the start of transaction (SoT) and it will remain low till data transmition occur to slave. As soon as the cs will be high it marks end of transaction (EoT), i.e. transmission has ended.
 * The cs signal will remain low till for 12 cycle of sclk because out data has 12 bit.
 * after 12 bit has been transmitted the cs signal will be pulled high.
-
+* with this knowledge let us again visit the statemachine part of the design, for help i've added the comments.
+  ```
+//state machine//
+    reg [11:0] temp;
+    
+  always@(posedge sclk)
+  begin
+    if(rst == 1'b1) begin   // <-- rst is active low signal
+      cs <= 1'b1;           // <-- initializing to default value      
+      mosi <= 1'b0;         // <-- initializing to default value 
+    end
+    else begin                    
+     case(state)
+         idle:
+             begin
+               if(newd == 1'b1) begin // newdata is present 
+                 state <= send;       // change the state
+                 temp <= din;        //  temp is an internal 12 bit register 
+                 cs <= 1'b0;         // chip select is made 0 i.e. start of transaction
+               end
+               else begin
+                 state <= idle;      // else state dont change
+                 temp <= 8'h00;      // temp receives default value
+               end
+             end
+       
+       
+       send : begin
+         if(count <= 11) begin     // count is used to count 12 cycle of sclk. i.re. it count 0 to 11
+           mosi <= temp[count];    //sending lsb first --> data transmission occur
+           count <= count + 1;     // incrementing the count
+         end
+         else
+             begin
+               count <= 0;        // count exceeds 11 then it again initialized to 0 
+               state <= idle;     //state is main ideal
+               cs <= 1'b1;        // cs is pilled logic high i.e. end of transaction
+               mosi <= 1'b0;      // making it default value
+             end 
+       end
+       
+                
+      default : state <= idle; 
+       
+   endcase
+  end 
+ end
+  
+endmodule
+  ```
+* The testbench is straight forward and if you understood the design code and the rough drawn waveform you can also understand the simulated waveform.
 
 ### Refference 
 
