@@ -302,18 +302,322 @@ endmodule
 * Only 2 pin facilitates the communication between the devices. See the picture below ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/fd918243-0830-40c6-bbb4-80e0fe8e69da)
 * For an UART pin the rx pin receives serial data while the tx pin sends serial data and the gnd pin of the communicationg UART interface should be matched so that there exist a common level for data signal to make sense.
 * Only two wires are needed to transmit data between two UARTs. Data flows from the tx pin of the transmitting UART to the rx pin of the receiving UART.
-### Difference from the SPI protocol 
+### Difference from the working of SPI protocol 
 * UARTs transmit data asynchronously, which means there is no clock signal to synchronize the output of bits from the transmitting UART to the sampling of bits by the receiving UART. That is why later on when we will see the verilog design code you will find that we donot produce any other clock signal as output of UART module like we had produced sclk signal in case of SPI design which was feed to slave devices for synchronization purpose. 
 * Instead of a clock signal, the transmitting UART adds start and stop bits to the data packet being transferred. These bits define the beginning and end of the data packet so the receiving UART knows when to start reading the bits i,e, they mark the start of transaction and end of transaction.
-* Let me demonstrate -  Suppose a master wishes to communicate to slave device through UART protocol. both the master and slave has its own UART interface. As master wants to send data to slave what master needs to do is transmit data through the tx pin of UART module. Now let us say the ideal value or default value of tx pin is logoc 1. the master will pull it down to logic 0 , now this first logic 0 bit in tx pin will mart the start of transaction, then followed by the serial data , thd alter all the bits of data is transmitted the master will pull the tx pin back to logic 1 which will mark the end of transaction. Something looks like this picture when serial transmission occurs ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/c88ff6ce-3e55-4be2-a07d-07cf90c17391)
+* Let me demonstrate -  Suppose a master wishes to communicate to slave device through UART protocol. both the master and slave has its own UART interface. As master wants to send data to slave what master needs to do is transmit data through the tx pin of UART module. Now let us say the ideal value or default value of tx pin is logoc 1. the master will pull it down to logic 0 , now this first logic 0 bit in tx pin will mart the start of transaction, then followed by the serial data , thd alter all the bits of data is transmitted the master will pull the tx pin back to logic 1 which will mark the end of transaction. Something looks like this picture when serial transmission occurs ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/47e48745-608d-4a9b-b2b5-1822f63e1087)
+* In the above picture I have considered 8 bit data communication with data value 10100101. Since the snipet is from starting of simulation you will find ideal or default value of the tx pin before transmission was not logic 1 instead it was 'X'. So to mark the start of transaction the tx bit was first pulled to logic 0  then followed by 8 bit data transmitting serially then after 8 bit transmission is over the tx bit is pulled high again for end of transmission bit. Also in my design there is again a dignal donetx to validate the end of transaction bit has been received let us ignore that pin for now.
+* Now same scenario is when slave wants to talk with master - ***<SoT>-<8 bit data bits>-<EoT>***
+* But now question arrise If we dont have any master clock signal they how the speed of data transfer is taken care of ?
+* When the receiving UART detects a start bit, it starts to read the incoming bits at a specific frequency known as the baud rate.
+* Baud rate is a measure of the speed of data transfer, expressed in bits per second (bps).
+* Both UARTs must operate at about the same baud rate. The baud rate between the transmitting and receiving UARTs can only differ by about 10% before the timing of bits gets too far off.
+* Now if you look at any general datasheet of UART you will get the baud rate information ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/26269428-f539-4c25-b31c-1188acbc60da)
+* In my case I'll choose 9600 as baud rate
+* If you get data sheet of UART IP you will find there are aoso some optional parity bit for error correction and detection. In my design I'm not considering any such bits.
 
+  ***Again I am saying the protocols data frames can be more complex like it may have few number of start and stop bit, 0 or 1 parity bit and depending upon the designer the architecture can be complex***
 
+### Advantage
+* Only uses two wires
+* No clock signal is necessary
+* Has a parity bit to allow for error checking
+* The structure of the data packet can be changed as long as both sides are set up for it
+### Disadvantage
+* The size of the data frame is limited to a maximum of 9 bits
+* Doesn’t support multiple slave or multiple master systems
+* The baud rates of each UART must be within 10% of each other
+
+  ### Verilog design code
+```
+`timescale 1ns / 1ps
+ 
+module uart_top
+#(
+parameter clk_freq = 1000000,
+parameter baud_rate = 9600
+)
+(
+  input clk,rst, 
+  input rx,
+  input [7:0] dintx,
+  input send,
+  output tx, 
+  output [7:0] doutrx,
+  output donetx,
+  output donerx
   
-‼️ Updating soon ‼️
+    );
+    
+uarttx 
+#(clk_freq, baud_rate) 
+utx   
+(clk, rst, send, dintx, tx, donetx);   
+ 
+uartrx 
+#(clk_freq, baud_rate)
+rtx
+(clk, rst, rx, donerx, doutrx);    
+    
+    
+endmodule
+ 
+
+module uarttx
+#(
+parameter clk_freq = 1000000,
+parameter baud_rate = 9600
+)
+(
+input clk,rst,
+input send,
+input [7:0] tx_data,
+output reg tx,
+output reg donetx
+);
+ 
+ localparam clkcount = (clk_freq/baud_rate); ///x
+  
+integer count = 0;
+integer counts = 0;
+ 
+reg uclk = 0;
+  
+parameter idle = 2'b00;
+parameter transfer = 2'b01;
+
+reg [1:0] state;
+ 
+  always@(posedge clk)
+    begin
+      if(count < clkcount/2)
+        count <= count + 1;
+      else begin
+        count <= 0;
+        uclk <= ~uclk;
+      end 
+    end
+  
+  
+  reg [7:0] din;
+   
+  always@(posedge uclk)
+    begin
+      if(rst) 
+      begin
+        state <= idle;
+      end
+     else
+     begin
+     case(state)
+       idle:
+         begin
+           counts <= 0;
+           tx <= 1'b1;    
+           donetx <= 1'b0;
+           
+           if(send)             
+           begin
+             state <= transfer;
+             din <= tx_data;
+             tx <= 1'b0;       
+           end                 
+           else
+             state <= idle;       
+         end
+       
+ 
+      
+      transfer: begin
+        if(counts <= 7) begin
+           counts <= counts + 1; 
+           tx <= din[counts];
+           state <= transfer;
+        end
+        else 
+        begin
+           counts <= 0;
+           tx <= 1'b1;
+           state <= idle;
+          donetx <= 1'b1;
+        end
+      end     
+      default : state <= idle;
+    endcase
+  end
+end
+ 
+endmodule
+ 
+
+module uartrx
+#(
+parameter clk_freq = 1000000, //MHz
+parameter baud_rate = 9600
+    )
+ (
+input clk,
+input rst,
+input rx,
+output reg done,
+output reg [7:0] rxdata
+);
+    
+localparam clkcount = (clk_freq/baud_rate);
+  
+integer count = 0;
+integer counts = 0;
+  
+reg uclk = 0;
+  
+parameter idle = 2'b00; 
+parameter start = 2'b01;
+
+reg [1:0] state;
+ 
+ ///////////uart_clock_gen
+  always@(posedge clk)
+    begin
+      if(count < clkcount/2)
+        count <= count + 1;
+      else begin
+        count <= 0;
+        uclk <= ~uclk;
+      end 
+    end
+
+  always@(posedge uclk)
+    begin
+      if(rst) 
+      begin
+     rxdata <= 8'h00;
+     counts <= 0;
+     done <= 1'b0;
+      end
+     else
+     begin
+     case(state)
+       
+     idle : 
+     begin
+     rxdata <= 8'h00;
+     counts <= 0;
+     done <= 1'b0;
+     
+     if(rx == 1'b0)
+       state <= start;
+     else
+       state <= idle;
+     end
+     
+     start: 
+     begin
+       if(counts <= 7)
+      begin
+     counts <= counts + 1;
+     rxdata <= {rx, rxdata[7:1]};
+     end
+     else
+     begin
+     counts <= 0;
+     done <= 1'b1;
+     state <= idle;
+     end
+     end
+   
+   
+   default : state <= idle;
+   
+   endcase
+ 
+end
+ 
+end
+ 
+endmodule
+```
+### Verilog Testbench
+
+```
+`timescale 1s / 1ps
+
+
+module test();
+
+reg clk,rst,rx;
+reg [7:0] dintx;
+reg send;
+wire tx;
+wire [7:0] doutrx;
+wire donetx;
+wire donerx;
+
+
+uart_top DUT (clk,rst,rx,dintx,send,tx,doutrx,donetx,donerx);
+
+initial clk = 0;
+always #5 clk = ~clk;
 
 
 
+initial begin
 
+///////////////////////////////////////////////// for transmission
+    @(posedge DUT.utx.uclk);
+    rst = 1; rx = 1; send = 0; dintx = 8'b10100101;
+    @(posedge DUT.utx.uclk);
+    rst = 0; send = 1;
+    #3000;
+///////////////////////////////////////////////// for reception
+    @(posedge DUT.rtx.uclk); 
+     rx = 0;                   // -----------> SoT
+    @(posedge DUT.rtx.uclk);
+    rx = 1;
+     @(posedge DUT.rtx.uclk);
+    rx = 0;
+     @(posedge DUT.rtx.uclk);
+    rx = 1;
+     @(posedge DUT.rtx.uclk);
+    rx = 0;
+     @(posedge DUT.rtx.uclk);
+    rx = 0;
+     @(posedge DUT.rtx.uclk);
+    rx = 1;
+     @(posedge DUT.rtx.uclk);
+    rx = 0;
+     @(posedge DUT.rtx.uclk);
+    rx = 1;
+     @(posedge DUT.rtx.uclk);
+    rx = 1;                //----------------> EoT
+    
+     @(posedge DUT.rtx.uclk);
+     @(posedge DUT.rtx.uclk);
+     $finish;
+    
+      
+end
+
+endmodule
+
+```
+
+### Simulated Waveform 
+
+
+
+![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/20434b88-b30f-4bd0-aeee-5da85a63c700)
+
+***I know at this point everything looks complex. Allow me to simplify the design, TB and waveform***
+
+### Design Description
+
+‼️ Updating soon Today Probably‼️
+
+
+
+### UART Protocol Refference
+
+* https://www.circuitbasics.com/basics-uart-communication/
 
 
 
