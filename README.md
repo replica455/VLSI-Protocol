@@ -296,7 +296,19 @@ endmodule
 * https://hackaday.com/2016/07/01/what-could-go-wrong-spi/
 
 # UART Protocol
+* Again an UART’s main purpose is to transmit and receive serial data.
+* You’ll find UARTs being used in many electronics projects to connect GPS modules, Bluetooth modules, and RFID card reader modules to your Raspberry Pi, Arduino, or other microcontrollers.
+* Now when should you use UART ? Use UART for device to device serial communication at ***low bandwidth***
+* Only 2 pin facilitates the communication between the devices. See the picture below ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/fd918243-0830-40c6-bbb4-80e0fe8e69da)
+* For an UART pin the rx pin receives serial data while the tx pin sends serial data and the gnd pin of the communicationg UART interface should be matched so that there exist a common level for data signal to make sense.
+* Only two wires are needed to transmit data between two UARTs. Data flows from the tx pin of the transmitting UART to the rx pin of the receiving UART.
+### Difference from the SPI protocol 
+* UARTs transmit data asynchronously, which means there is no clock signal to synchronize the output of bits from the transmitting UART to the sampling of bits by the receiving UART. That is why later on when we will see the verilog design code you will find that we donot produce any other clock signal as output of UART module like we had produced sclk signal in case of SPI design which was feed to slave devices for synchronization purpose. 
+* Instead of a clock signal, the transmitting UART adds start and stop bits to the data packet being transferred. These bits define the beginning and end of the data packet so the receiving UART knows when to start reading the bits i,e, they mark the start of transaction and end of transaction.
+* Let me demonstrate -  Suppose a master wishes to communicate to slave device through UART protocol. both the master and slave has its own UART interface. As master wants to send data to slave what master needs to do is transmit data through the tx pin of UART module. Now let us say the ideal value or default value of tx pin is logoc 1. the master will pull it down to logic 0 , now this first logic 0 bit in tx pin will mart the start of transaction, then followed by the serial data , thd alter all the bits of data is transmitted the master will pull the tx pin back to logic 1 which will mark the end of transaction. Something looks like this picture when serial transmission occurs ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/c88ff6ce-3e55-4be2-a07d-07cf90c17391)
 
+
+  
 ‼️ Updating soon ‼️
 
 
