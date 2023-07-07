@@ -612,6 +612,9 @@ endmodule
 
 ### Design Description
 
+So from the verilog top module if I try to draw a block diagram then it will look like this. ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/d66172c1-e432-4409-95d5-908b15e62efe) let us now describe the purpose od each pin.
+
+
 ‼️ Updating soon Today Probably‼️
 
 
