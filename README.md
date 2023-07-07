@@ -640,7 +640,8 @@ Let us now discuss with the transmission mechanism.
 * So you can see in the above picture that the ***uarttx*** module all the pins which are required for transmission purpose along with the global pin i.e. clk, rst, send, dintx[7:0], donetx, tx.
 * Similarly in ***uartrx*** module we have all the pins which are required for reception purpose along with the global pin i.e. clk, rst, rx, doutrx[7:0], donerx.
 * ***What I'll do now is to describe a single module and toher module you can understand easily. Let us take the transmission module "uarttx"***
-* ``` 
+*
+``` 
 module uarttx
 #(
 parameter clk_freq = 1000000,
@@ -727,10 +728,9 @@ reg [1:0] state;
 end
  
 endmodule
- 
-  ```
-* IF i discuss from top to bottom first there are 2 parameter declared. One is for clock frequency which is 1MHz (say) and other is the UART interface baud rate 9600. These 2 parameter will determine the working frequency of the device.
 ```
+* IF i discuss from top to bottom first there are 2 parameter declared. One is for clock frequency which is 1MHz (say) and other is the UART interface baud rate 9600. These 2 parameter will determine the working frequency of the device.
+* ```
 module uarttx
 #(
 parameter clk_freq = 1000000,
