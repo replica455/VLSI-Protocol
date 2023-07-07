@@ -630,6 +630,11 @@ The above 3 pin deals with the reception mechanism of the peripheral. So simulta
 Let us now discuss with the transmission mechanism. 
 * ***send and Dintx[7:0] pin*** whenever user has a new data which he wants to communicate with other device the first it will make 'send' pin high which will imply the there is a data to communicate and simultaniously we put the 8 bit data in the dintx[7:0] pin. I'm not annotating the picture like previous one but you can understand the meaning just by observing below picture. ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/020e07a8-92c3-41c8-9d43-2dc210f31334)
 * ***tx pin*** The data which we mentioned in the dintx[7:0] pin is the send bit by bit serially through 'tx' pin and obviously the same format will be used ```< 0 >--< 10100101 >--< 1 >``` i.e. ```< start bit >--< data bit >--< stop bit >```. The same thing you can understand from the picture. Hope you understand even without annotations. ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/b3abac42-6083-48b4-8f98-e0975618bf47)
+* As soon as the stop bit is received the donetx pin will be made high.
+
+***Now i think you can understand the reception and transmission mechanism in an abstract level using the simulated waveform, Please review the waveform again to grasp the overall operation***
+
+
   
 
 
