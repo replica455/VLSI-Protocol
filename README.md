@@ -2,8 +2,8 @@
 ```
 communication Protocol covered are
 
-1. [x] SPI
-2. [x] UART
+1. ✔️ SPI
+2. ✔️ UART
 3. [ ] I2C
 
 Bus Protocol Covered are
@@ -857,17 +857,34 @@ endmodule
 ***After understanding the design operation, design simulated waveform and design code I'm expecting you can write the testbench by your own. Now this concludes the UART Protocol.***
 
 So we have covered
-[x]SPI
-[X] UART
-Now let us see I2C Protocol
-# I2C protocol
-‼️ ***Updating soon, Will reqire time because it is lengthy and I'm traveling to new city. I hope I can complete the Communication protocol by 16 JULY*** ‼️
 
+
+
+
+✔️ SPI
+
+
+
+
+✔️ UART
+
+
+
+
+
+
+Now let us see I2C Protocol
 
 
 ### UART Protocol Refference
 
 * https://www.circuitbasics.com/basics-uart-communication/
+
+# I2C protocol
+‼️ ***Updating soon, Will reqire time because it is lengthy and I'm traveling to new city. I hope I can complete the Communication protocol by 16 JULY*** ‼️
+
+
+
 
 
 
