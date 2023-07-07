@@ -612,7 +612,19 @@ endmodule
 
 ### Design Description
 
-So from the verilog top module if I try to draw a block diagram then it will look like this. ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/d66172c1-e432-4409-95d5-908b15e62efe) let us now describe the purpose od each pin.
+So from the verilog top module if I try to draw a block diagram then it will look like this. ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/d66172c1-e432-4409-95d5-908b15e62efe) 
+
+let us now describe the purpose od each pin.
+
+* ***clk and rst*** are the global signal. clk is the pin at which the FPGA is operationg 100MHz. Through this clock pin we will derive the device operating rate using the mentioned baud rate. The rst is the reset pin of the device.
+
+  
+* ***rx*** pin to receive data from other device serially.
+* ***donerx*** whenever we complete receiving the 8 bit serial data from other devices the donerx pin will be pulled high logic.
+* ***doutrx[7:0]*** in case of reception as soon as all the 8 bits have been received in "rx" pin we merge all the single bit serially received data in a single 8 bit packet and show the final output at the 8 bit doutrx[7:0] pin.
+
+The above 3 pin deals with the reception mechanism of the peripheral. So simultaniously let us also look at the waveform also. I'm considering an arbitary 8 bit input ```10100101``` coming serially in rx pin. So the packet received at rx pin will look like < 0 >--< 10100101 >--< 1 > i.e. 
+< start bit > -- < data bits > -- < stop bit > . After receiving the stop bit the datas received will be merged to 8 bit data and finally shown at doutrx[7:0] data pin and to tell the user the answer is available we observe the donerx pin goes high logic. Same thing is explained in the below picture ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/0c425c35-6a6c-45e9-b76c-c64a3001d285)
 
 
 ‼️ Updating soon Today Probably‼️
