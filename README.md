@@ -628,11 +628,20 @@ The above 3 pin deals with the reception mechanism of the peripheral. So simulta
 ```< start bit > -- < data bits > -- < stop bit >``` . After receiving the stop bit the datas received will be merged to 8 bit data and finally shown at doutrx[7:0] data pin and to tell the user the answer is available we observe the donerx pin goes high logic. Same thing is explained in the below picture ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/0c425c35-6a6c-45e9-b76c-c64a3001d285)
 
 Let us now discuss with the transmission mechanism. 
-* ***send and Dintx[7:0] pin*** whenever user has a new data which he wants to communicate with other device the first it will make 'send' pin high which will imply the there is a data to communicate and simultaniously we put the 8 bit data in the dintx[7:0] pin. I'm not annotating the picture like previous one but you can understand the meaning just by observing below picture. ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/020e07a8-92c3-41c8-9d43-2dc210f31334)
+* ***send and dintx[7:0] pin*** whenever user has a new data which he wants to communicate with other device the first it will make 'send' pin high which will imply the there is a data to communicate and simultaniously we put the 8 bit data in the dintx[7:0] pin. I'm not annotating the picture like previous one but you can understand the meaning just by observing below picture. ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/020e07a8-92c3-41c8-9d43-2dc210f31334)
 * ***tx pin*** The data which we mentioned in the dintx[7:0] pin is the send bit by bit serially through 'tx' pin and obviously the same format will be used ```< 0 >--< 10100101 >--< 1 >``` i.e. ```< start bit >--< data bit >--< stop bit >```. The same thing you can understand from the picture. Hope you understand even without annotations. ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/b3abac42-6083-48b4-8f98-e0975618bf47)
 * As soon as the stop bit is received the donetx pin will be made high.
 
 ***Now i think you can understand the reception and transmission mechanism in an abstract level using the simulated waveform, Please review the waveform again to grasp the overall operation***
+
+***Let us move deep into the design and see how the design is made***
+* If we dig deep into the design implementation you will see the structure like this ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/55315e6b-c3fe-409e-bf3f-2419de40f562)
+* See there are 2 operation transmission and reception so I've created 2 separate module for these 2 operation and named them as ***uarttx module for transmission*** and ***uartrx module for reception***.
+* So you can see in the above picture that the ***uarttx*** module all the pins which are required for transmission purpose along with the global pin i.e. clk, rst, send, dintx[7:0], donetx, tx.
+* Similarly in ***uartrx*** module we have all the pins which are required for reception purpose along with the global pin i.e. clk, rst, rx, doutrx[7:0], donerx.
+* ***What I'll do now is to describe a single module and toher module you can understand easily. Let us take the transmission module "uarttx"***
+* 
+
 
 
   
