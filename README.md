@@ -624,8 +624,8 @@ let us now describe the purpose od each pin.
 * ***doutrx[7:0]*** in case of reception as soon as all the 8 bits have been received in "rx" pin we merge all the single bit serially received data in a single 8 bit packet and show the final output at the 8 bit doutrx[7:0] pin.
 
 The above 3 pin deals with the reception mechanism of the peripheral. So simultaniously let us also look at the waveform also. I'm considering an arbitary 8 bit input ```10100101``` coming serially in rx pin. So the packet received at rx pin will look like 
-< 0 >--< 10100101 >--< 1 > i.e. 
-< start bit > -- < data bits > -- < stop bit > . After receiving the stop bit the datas received will be merged to 8 bit data and finally shown at doutrx[7:0] data pin and to tell the user the answer is available we observe the donerx pin goes high logic. Same thing is explained in the below picture ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/0c425c35-6a6c-45e9-b76c-c64a3001d285)
+```< 0 >--< 10100101 >--< 1 >``` i.e. 
+```< start bit > -- < data bits > -- < stop bit >``` . After receiving the stop bit the datas received will be merged to 8 bit data and finally shown at doutrx[7:0] data pin and to tell the user the answer is available we observe the donerx pin goes high logic. Same thing is explained in the below picture ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/0c425c35-6a6c-45e9-b76c-c64a3001d285)
 
 Let us now discuss with the transmission mechanism. 
 
