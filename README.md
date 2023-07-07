@@ -640,6 +640,131 @@ Let us now discuss with the transmission mechanism.
 * So you can see in the above picture that the ***uarttx*** module all the pins which are required for transmission purpose along with the global pin i.e. clk, rst, send, dintx[7:0], donetx, tx.
 * Similarly in ***uartrx*** module we have all the pins which are required for reception purpose along with the global pin i.e. clk, rst, rx, doutrx[7:0], donerx.
 * ***What I'll do now is to describe a single module and toher module you can understand easily. Let us take the transmission module "uarttx"***
+* ``` 
+module uarttx
+#(
+parameter clk_freq = 1000000,
+parameter baud_rate = 9600
+)
+(
+input clk,rst,
+input send,
+input [7:0] tx_data,
+output reg tx,
+output reg donetx
+);
+ 
+ localparam clkcount = (clk_freq/baud_rate); ///x
+  
+integer count = 0;
+integer counts = 0;
+ 
+reg uclk = 0;
+  
+parameter idle = 2'b00;
+parameter transfer = 2'b01;
+
+reg [1:0] state;
+ 
+ ///////////uart_clock_gen
+  always@(posedge clk)
+    begin
+      if(count < clkcount/2)
+        count <= count + 1;
+      else begin
+        count <= 0;
+        uclk <= ~uclk;
+      end 
+    end
+  
+  
+  reg [7:0] din;
+  ////////////////////Reset decoder
+ 
+  always@(posedge uclk)
+    begin
+      if(rst) 
+      begin
+        state <= idle;
+      end
+     else
+     begin
+     case(state)
+       idle:
+         begin
+           counts <= 0;
+           tx <= 1'b1;    //////////////////default value of tx is 1;
+           donetx <= 1'b0;
+           
+           if(send)             ////////////////////////////// send is active high signal 
+           begin
+             state <= transfer;
+             din <= tx_data;
+             tx <= 1'b0;       ///////////////////////////// after initiating the process through send signal the tx bit is pulled down(SoT)
+           end                 ///////////////////////////// So first tx = 0 indicates SoT;
+           else
+             state <= idle;       
+         end
+         
+      transfer: begin
+        if(counts <= 7) begin
+           counts <= counts + 1; 
+           tx <= din[counts];
+           state <= transfer;
+        end
+        else 
+        begin
+           counts <= 0;
+           tx <= 1'b1;
+           state <= idle;
+          donetx <= 1'b1;
+        end
+      end
+          
+      default : state <= idle;
+    endcase
+  end
+end
+ 
+endmodule
+ 
+  ```
+* IF i discuss from top to bottom first there are 2 parameter declared. One is for clock frequency which is 1MHz (say) and other is the UART interface baud rate 9600. These 2 parameter will determine the working frequency of the device.
+```
+module uarttx
+#(
+parameter clk_freq = 1000000,
+parameter baud_rate = 9600
+)
+```
+* Next comes the input and output pins
+```
+(
+input clk,rst,          <-- Global pin
+input send,             <-- Transmission input pin
+input [7:0] tx_data,    <-- Transmission input pin
+output reg tx,          <-- Transmission output pin
+output reg donetx       <-- Transmission output pin
+);
+```
+* The next step is to generate the frequency at which the UART peripheral will work. We want the device to work at the baud rate. But we only have the FPGA clock frequency 100MHz. So out next task is to convert the Clk frequency to approximate baud rate. We use the same logic as we discussed in the SPI protocol. i.e. clock devider. [1MHz / 9600 = 104 approx number of cycle]
+```
+localparam clkcount = (clk_freq/baud_rate); <- It gives us number of cycle of 1MHz clk signal which is equivalent to 1 cycle of baud rate signal 
+reg uclk = 0;                               <- This is the signal which will mantain the operation frequency of the device
+integer count = 0                           <- counter to count 0 to (clkcount / 2) i.e. 104 / 2 = 52 cycle
+///////////uart_clock_gen
+  always@(posedge clk)
+    begin
+      if(count < clkcount/2)       <- for count is less than 52 cycle, just increment the counter
+        count <= count + 1;
+      else begin
+        count <= 0;                <- for count value more than 52 cycle toogle the state of uclk and reset the count value and keep on repeating
+        uclk <= ~uclk;
+      end 
+    end
+```
+This will produce a "uclk" signal which will produce signal approximately to required baud rate. This signal will control the required state machine.
+
 * 
 
 
