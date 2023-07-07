@@ -730,7 +730,7 @@ end
 endmodule
 ```
 * IF i discuss from top to bottom first there are 2 parameter declared. One is for clock frequency which is 1MHz (say) and other is the UART interface baud rate 9600. These 2 parameter will determine the working frequency of the device.
-* ```
+```
 module uarttx
 #(
 parameter clk_freq = 1000000,
