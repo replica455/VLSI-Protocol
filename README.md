@@ -763,18 +763,101 @@ integer count = 0                           <- counter to count 0 to (clkcount /
       end 
     end
 ```
-This will produce a "uclk" signal which will produce signal approximately to required baud rate. This signal will control the required state machine.
-
-* 
-
-
-
+This will produce a "uclk" signal which will produce signal approximately to required baud rate. This signal will control the required state machine. Even Though we have produced the uclk signal it is used just to mantain the required frequency of operation and is not responsible for synchronizing the operation between 2 communicationg UART module.
+* Next Let us observe the actual state machine for transreceiver operation. There are 2 states of the machine "idle" and "transfer" . Follow the code and comments you will understand.
+```
+always@(posedge uclk)
+    begin
+      if(rst) 
+      begin
+        state <= idle;
+      end
+     else
+     begin
+     case(state)
+       idle:
+         begin
+           counts <= 0;         <-- default value
+           tx <= 1'b1;          <--default value of tx is 1;
+           donetx <= 1'b0;      <--default value 
+           
+           if(send)             <-- send is active high signal 
+           begin
+             state <= transfer; <-- change the state
+             din <= tx_data;    <-- save the din value to a temporary register
+             tx <= 1'b0;        <-- after initiating the process through send signal the tx bit is pulled down(SoT)
+           end                  ///////////////////////////// So first tx = 0 indicates SoT;
+           else
+             state <= idle;       
+         end
+         
+      transfer: begin
+        if(counts <= 7) begin   <-- Since we are dealing with 8 bit data (next line)
+           counts <= counts + 1;<-- we count till 8 (next line)
+           tx <= din[counts];   <-- and simultaniously serially transmit the data din bit by bit
+           state <= transfer;   <-- donot change the state
+        end
+        else 
+        begin
+           counts <= 0;         <-- reset the counts
+           tx <= 1'b1;          <-- make the last bit 1 for EoT
+           state <= idle;       <-- change the state
+          donetx <= 1'b1;       <-- spull donetx state high for completion
+        end
+      end
+          
+      default : state <= idle;
+    endcase
+  end
+end
+```
+* In the ***uartrx module*** the only different mechanism is to accumulate the data received in the rx pin. The logis is simple, we use a shift register.
+```
+ start: 
+     begin
+       if(counts <= 7)
+      begin
+     counts <= counts + 1;
+     rxdata <= {rx, rxdata[7:1]}; <-- Shift register logic 
+```
+* Else every thing is same in usrtrx module
+* Let us see the top module
+```
+module uart_top
+#(
+parameter clk_freq = 1000000,
+parameter baud_rate = 9600
+)
+(
+  input clk,rst,                           <---- include all the pins from the block diagram we I've shown previously
+  input rx,
+  input [7:0] dintx,
+  input send,
+  output tx, 
+  output [7:0] doutrx,
+  output donetx,
+  output donerx
   
+    );
+    
+uarttx                                   <-- Instantiate the transmission module
+#(clk_freq, baud_rate)                   <-- pass the parameter values, If you want to cange the value you can mention in the top directly
+utx                                      <-- Instantiation name
+(clk, rst, send, dintx, tx, donetx);     <-- Line up the connecting wire
+ 
+uartrx                                   <-- Same as the previous one
+#(clk_freq, baud_rate)
+rtx
+(clk, rst, rx, donerx, doutrx);    
+    
+    
+endmodule
+```
+***After understanding the design operation, design simulated waveform and design code I'm expecting you can write the testbench by your own. Now this concludes the UART Protocol.***
 
 
-
-
-‼️ Updating soon Today Probably‼️
+# I2C protocol
+‼️ ***Updating soon, Will reqire time because it is lengthy and I'm traveling to new city. I hope I can complete the Communication protocol by 16 JULY*** ‼️
 
 
 
