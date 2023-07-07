@@ -625,7 +625,8 @@ let us now describe the purpose od each pin.
 
 The above 3 pin deals with the reception mechanism of the peripheral. So simultaniously let us also look at the waveform also. I'm considering an arbitary 8 bit input ```10100101``` coming serially in rx pin. So the packet received at rx pin will look like 
 ```< 0 >--< 10100101 >--< 1 >``` i.e. 
-```< start bit > -- < data bits > -- < stop bit >``` . After receiving the stop bit the datas received will be merged to 8 bit data and finally shown at doutrx[7:0] data pin and to tell the user the answer is available we observe the donerx pin goes high logic. Same thing is explained in the below picture ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/0c425c35-6a6c-45e9-b76c-c64a3001d285)
+```< start bit > -- < data bits > -- < stop bit >``` . After receiving the stop bit the datas received will be merged to 8 bit data and finally shown at doutrx[7:0] data pin and to tell the user the answer is available we observe the donerx pin goes high logic. Same thing is explained in the below picture ![251634918-0c425c35-6a6c-45e9-b76c-c64a3001d285](https://github.com/replica455/VLSI-Protocol/assets/55652905/06a8e77d-9f60-47f5-916d-5fa283410d5a)
+
 
 Let us now discuss with the transmission mechanism. 
 * ***send and dintx[7:0] pin*** whenever user has a new data which he wants to communicate with other device the first it will make 'send' pin high which will imply the there is a data to communicate and simultaniously we put the 8 bit data in the dintx[7:0] pin. I'm not annotating the picture like previous one but you can understand the meaning just by observing below picture. ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/020e07a8-92c3-41c8-9d43-2dc210f31334)
@@ -855,7 +856,10 @@ endmodule
 ```
 ***After understanding the design operation, design simulated waveform and design code I'm expecting you can write the testbench by your own. Now this concludes the UART Protocol.***
 
-
+So we have covered
+[x]SPI
+[X] UART
+Now let us see I2C Protocol
 # I2C protocol
 ‼️ ***Updating soon, Will reqire time because it is lengthy and I'm traveling to new city. I hope I can complete the Communication protocol by 16 JULY*** ‼️
 
