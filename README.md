@@ -883,6 +883,23 @@ Now let us see I2C Protocol
 # I2C protocol
 ‼️ ***Updating soon, Will reqire time because it is lengthy and I'm traveling to new city. I hope I can complete the Communication protocol by 16 JULY*** ‼️
 
+Like UART communication, I2C only uses two wires to transmit data between devices 1. SDA 2. SCL 
+
+
+
+![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/a4de5eca-c0f4-479f-81fe-2abc67be1fc9)
+
+Like SPI, I2C is synchronous, so the output of bits is synchronized to the sampling of bits by a clock signal shared between the master and the slave. The clock signal is always controlled by the master. This protocol might be bit complicated so I'm taking the example such that the I2C interface is communicating with a memory. So our process can be summed up like the I2C peripheral may write a data to the memory or can read the data from the memory. 
+To make it easy just remember that the message frame can be abstracted up like the figure below.
+
+
+![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/57965433-ea83-466f-bac3-763f9bfff1ec)
+
+
+all the communication process will be acieved by using only those 2 line.
+
+
+
 
 
 
