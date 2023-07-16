@@ -896,7 +896,12 @@ To make it easy just remember that the message frame can be abstracted up like t
 ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/57965433-ea83-466f-bac3-763f9bfff1ec)
 
 
-all the communication process will be acieved by using only those 2 line.
+all the communication process will be acieved by using only those 2 line. 
+
+* ***Start Condition*** Every message frame will have a START condition, else the communication will not occur. To have the start condition the SCL will be logic 1 for 2 clk cycle while at those same clock cycle the SDA line will switch from logic 1 to logic 0. ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/dc9c90e4-79d0-4e5f-8bf0-f861719a6800)
+* ***address*** Now after the start condition the actual transcation starts. Now when the transaction will occur the SCL line will follow reference clock only which helps to synchronize transaction between the master and slave. Till the transaction occurs the SCL and Reference clock will be same. The transaction occurs vis SDA line. Since we are using a memory to communicate, irrespective of operation (read or write ) we need to mention the address mentioned by master. The address frame is of 8 bit, of which the 7 bit addr[7:1] is used for mentioning the address, i.e. 7 bit address. So maximum depth of memory can be of 2^7 = 128 location. Now the last LSB bit of address addr[0] is use to mention the type of operation. Say if it is 1 then write operation and when it is 0 Read operation. So overall these 8 bits need to be communicated to slave serially in 8 clock cycle. But in the diagram I've minimized the transaction. ![image](https://github.com/replica455/VLSI-Protocol/assets/55652905/99faa579-35ff-41be-b409-770fc4236581)
+
+
 
 
 
